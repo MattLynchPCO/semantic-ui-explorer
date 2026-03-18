@@ -48,13 +48,37 @@ function App() {
   }
 
   const handleA11yOpen = () => {
-    setIsA11yOpen(true)
-    addA11yEvent('onOpen')
+    setIsA11yOpen((previousOpen) => {
+      if (previousOpen) {
+        return previousOpen
+      }
+
+      addA11yEvent('onOpen')
+      return true
+    })
   }
 
   const handleA11yClose = () => {
-    setIsA11yOpen(false)
-    addA11yEvent('onClose')
+    setIsA11yOpen((previousOpen) => {
+      if (!previousOpen) {
+        return previousOpen
+      }
+
+      addA11yEvent('onClose')
+      return false
+    })
+  }
+
+  const handleA11yTriggerClick = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (isA11yOpen) {
+      handleA11yClose()
+      return
+    }
+
+    handleA11yOpen()
   }
 
   const handleA11ySelect = (value) => {
@@ -189,7 +213,7 @@ function App() {
             <Dropdown
               id="colour-select-a11y"
               className="a11y-dropdown"
-              selection
+              icon={null}
               openOnFocus={false}
               open={isA11yOpen}
               onOpen={handleA11yOpen}
@@ -202,16 +226,26 @@ function App() {
                   className="a11y-dropdown-trigger"
                   aria-haspopup="listbox"
                   aria-expanded={isA11yOpen}
+                  aria-controls="colour-select-a11y-listbox"
+                  onClick={handleA11yTriggerClick}
                 >
                   <span className="text">
                     {selectedColourA11y
                       ? colourOptions.find((option) => option.value === selectedColourA11y)?.text
                       : 'Choose a colour'}
                   </span>
+                  <span className="a11y-dropdown-caret" aria-hidden="true">
+                    ▾
+                  </span>
                 </button>
               )}
             >
-              <Dropdown.Menu as="ul" className="a11y-dropdown-menu menu" role="listbox">
+              <Dropdown.Menu
+                id="colour-select-a11y-listbox"
+                as="ul"
+                className="a11y-dropdown-menu menu"
+                role="listbox"
+              >
                 {colourOptions.map((option) => (
                   <li key={option.value} className="a11y-dropdown-item" role="none">
                     <button
@@ -219,7 +253,10 @@ function App() {
                       className="a11y-option-button"
                       role="option"
                       aria-selected={selectedColourA11y === option.value}
-                      onClick={() => handleA11ySelect(option.value)}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        handleA11ySelect(option.value)
+                      }}
                     >
                       {option.text}
                     </button>
