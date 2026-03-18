@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import './App.css'
 
@@ -10,6 +11,29 @@ const colourOptions = [
 ]
 
 function App() {
+  const [selectedColour, setSelectedColour] = useState('')
+  const [eventLog, setEventLog] = useState([])
+
+  const addEvent = (name, details = '') => {
+    const time = new Date().toLocaleTimeString()
+    const suffix = details ? `: ${details}` : ''
+
+    setEventLog((previousEvents) => [
+      `${time} - ${name}${suffix}`,
+      ...previousEvents,
+    ])
+  }
+
+  const handleChange = (_, data) => {
+    const nextValue = typeof data.value === 'string' ? data.value : ''
+    setSelectedColour(nextValue)
+    addEvent('onChange (selection)', nextValue || 'none')
+  }
+
+  const clearLog = () => {
+    setEventLog([])
+  }
+
   return (
     <main className="explorer">
       <h1>Semantic UI Explorer</h1>
@@ -33,6 +57,35 @@ function App() {
           and <code>aria-haspopup</code>.
         </p>
 
+        <div className="inspector-panel" aria-live="polite">
+          <h3>Interaction Inspector</h3>
+          <p className="selected-value">
+            Selected value:{' '}
+            <strong>{selectedColour || 'none'}</strong>
+          </p>
+
+          <div className="event-log-header">
+            <h4>Event Log</h4>
+            <button
+              type="button"
+              className="clear-log-button"
+              onClick={clearLog}
+              disabled={eventLog.length === 0}
+            >
+              Clear log
+            </button>
+          </div>
+          {eventLog.length === 0 ? (
+            <p className="empty-log">No events yet. Interact with the dropdown.</p>
+          ) : (
+            <ol className="event-log">
+              {eventLog.map((eventEntry, index) => (
+                <li key={`${eventEntry}-${index}`}>{eventEntry}</li>
+              ))}
+            </ol>
+          )}
+        </div>
+
         <div className="control-demo">
           <label htmlFor="colour-select" className="demo-label">
             Select a colour
@@ -41,7 +94,13 @@ function App() {
             id="colour-select"
             placeholder="Choose a colour"
             selection
+            value={selectedColour}
             options={colourOptions}
+            onFocus={() => addEvent('onFocus')}
+            onBlur={() => addEvent('onBlur')}
+            onOpen={() => addEvent('onOpen')}
+            onClose={() => addEvent('onClose')}
+            onChange={handleChange}
           />
         </div>
       </section>

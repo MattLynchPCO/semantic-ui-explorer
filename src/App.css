@@ -37,3 +37,57 @@
   font-weight: bold;
 }
 
+.inspector-panel {
+  margin-top: 24px;
+  border-top: 1px dashed #cfcfcf;
+  padding-top: 16px;
+}
+
+.inspector-panel h3,
+.inspector-panel h4 {
+  margin: 0 0 10px;
+}
+
+.event-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.clear-log-button {
+  border: 1px solid #bbb;
+  background: #fff;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.clear-log-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selected-value {
+  margin: 0 0 16px;
+}
+
+.empty-log {
+  margin: 0;
+  color: #666;
+}
+
+.event-log {
+  margin: 0;
+  padding-left: 20px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.event-log li {
+  margin-bottom: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9rem;
+}
+
