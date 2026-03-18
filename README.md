@@ -61,5 +61,44 @@ Key attributes to look at on the Dropdown:
 |---|---|
 | `npm run dev` | Start development server |
 | `npm run build` | Production build |
+| `npm run build:pages` | Production build with GitHub Pages base path |
+| `npm run deploy` | Build and publish `dist` to `gh-pages` branch |
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
+
+## Publishing to GitHub Pages
+
+You now have two ways to publish this app so anyone can access it:
+
+### Option 1: Manual deploy from GitHub Actions (recommended)
+
+This repo includes a manual workflow at `.github/workflows/deploy-pages.yml`.
+
+1. Push your latest changes to `main`.
+2. In GitHub, open **Actions**.
+3. Select **Deploy GitHub Pages**.
+4. Click **Run workflow**.
+
+The site is deployed only when you trigger it, so you get an on-demand publish flow.
+
+### Option 2: Manual deploy from your machine
+
+Run:
+
+```bash
+npm run deploy
+```
+
+That command builds with the correct base path and pushes `dist` to a `gh-pages`
+branch using the `gh-pages` package.
+
+### GitHub repo settings (one-time)
+
+In **Settings → Pages**:
+
+- Set **Source** to **GitHub Actions** (for Option 1), or
+- Set **Source** to **Deploy from a branch** and pick `gh-pages` (for Option 2).
+
+Your public URL will be:
+
+`https://MattLynchPCO.github.io/semantic-ui-explorer/`
