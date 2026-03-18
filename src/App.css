@@ -1,0 +1,39 @@
+.explorer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  font-family: sans-serif;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 40px;
+}
+
+.control-section {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.control-section h2 {
+  margin-top: 0;
+}
+
+.description {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.control-demo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.demo-label {
+  font-weight: bold;
+}
+
