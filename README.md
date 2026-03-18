@@ -10,6 +10,21 @@ The initial focus is on the **Dropdown** component.
 
 ## Getting Started
 
+### GitHub Codespaces (recommended)
+
+Click **Code → Codespaces → Create codespace** on the repository page. The
+devcontainer will automatically install dependencies. Once the codespace is
+ready, run:
+
+```bash
+npm run dev
+```
+
+The Codespaces port-forwarding proxy will detect port 5173 and open a browser
+tab pointing at the forwarded URL so you can interact with the app straight away.
+
+### Local development
+
 ```bash
 npm install
 npm run dev
