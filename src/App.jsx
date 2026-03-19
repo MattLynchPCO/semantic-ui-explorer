@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
 import './App.css'
 
 const colourOptions = [
@@ -16,6 +20,8 @@ function App() {
   const [selectedColourA11y, setSelectedColourA11y] = useState('')
   const [eventLogA11y, setEventLogA11y] = useState([])
   const [isA11yOpen, setIsA11yOpen] = useState(false)
+  const [selectedColourMui, setSelectedColourMui] = useState('')
+  const [eventLogMui, setEventLogMui] = useState([])
 
   const addEvent = (name, details = '') => {
     const time = new Date().toLocaleTimeString()
@@ -89,6 +95,26 @@ function App() {
 
   const clearLogA11y = () => {
     setEventLogA11y([])
+  }
+
+  const addMuiEvent = (name, details = '') => {
+    const time = new Date().toLocaleTimeString()
+    const suffix = details ? `: ${details}` : ''
+
+    setEventLogMui((previousEvents) => [
+      `${time} - ${name}${suffix}`,
+      ...previousEvents,
+    ])
+  }
+
+  const handleMuiChange = (event) => {
+    const nextValue = event.target.value
+    setSelectedColourMui(nextValue)
+    addMuiEvent('onChange (selection)', nextValue || 'none')
+  }
+
+  const clearLogMui = () => {
+    setEventLogMui([])
   }
 
   return (
@@ -264,6 +290,78 @@ function App() {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
+          </div>
+        </section>
+
+        <section className="control-section">
+          <h2>Dropdown - Material UI</h2>
+          <p className="description">
+            The same dropdown using the{' '}
+            <a
+              href="https://mui.com/material-ui/react-select/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Material UI
+            </a>{' '}
+            <code>Select</code> component. Both libraries coexist on the same
+            page; compare the generated markup and accessibility attributes with
+            the Semantic UI versions.
+          </p>
+
+          <div className="inspector-panel" aria-live="polite">
+            <h3>Interaction Inspector</h3>
+            <p className="selected-value">
+              Selected value:{' '}
+              <strong>{selectedColourMui || 'none'}</strong>
+            </p>
+
+            <div className="event-log-header">
+              <h4>Event Log</h4>
+              <button
+                type="button"
+                className="clear-log-button"
+                onClick={clearLogMui}
+                disabled={eventLogMui.length === 0}
+              >
+                Clear log
+              </button>
+            </div>
+            <div className="event-log-shell">
+              {eventLogMui.length === 0 ? (
+                <p className="empty-log">No events yet. Interact with the dropdown.</p>
+              ) : (
+                <ol className="event-log">
+                  {eventLogMui.map((eventEntry, index) => (
+                    <li key={`${eventEntry}-${index}`}>{eventEntry}</li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          </div>
+
+          <div className="control-demo">
+            <FormControl size="small" sx={{ minWidth: 200 }}>
+              <InputLabel id="mui-colour-select-label">Select a colour</InputLabel>
+              <Select
+                labelId="mui-colour-select-label"
+                id="mui-colour-select"
+                value={selectedColourMui}
+                label="Select a colour"
+                onChange={handleMuiChange}
+                onOpen={() => addMuiEvent('onOpen')}
+                onClose={() => addMuiEvent('onClose')}
+                onFocus={() => addMuiEvent('onFocus')}
+                onBlur={() => addMuiEvent('onBlur')}
+                displayEmpty
+              >
+                {colourOptions.map((option) => (
+                  <MenuItem key={option.key} value={option.value}>
+                    {option.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
         </section>
       </div>
