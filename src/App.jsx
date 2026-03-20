@@ -4,6 +4,15 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
+import {
+  Button,
+  Label,
+  ListBox,
+  ListBoxItem,
+  Popover,
+  Select as AriaSelect,
+  SelectValue,
+} from 'react-aria-components'
 import './App.css'
 
 const colourOptions = [
@@ -22,6 +31,8 @@ function App() {
   const [isA11yOpen, setIsA11yOpen] = useState(false)
   const [selectedColourMui, setSelectedColourMui] = useState('')
   const [eventLogMui, setEventLogMui] = useState([])
+  const [selectedColourAria, setSelectedColourAria] = useState('')
+  const [eventLogAria, setEventLogAria] = useState([])
 
   const addEvent = (name, details = '') => {
     const time = new Date().toLocaleTimeString()
@@ -115,6 +126,25 @@ function App() {
 
   const clearLogMui = () => {
     setEventLogMui([])
+  }
+
+  const addAriaEvent = (name, details = '') => {
+    const time = new Date().toLocaleTimeString()
+    const suffix = details ? `: ${details}` : ''
+
+    setEventLogAria((previousEvents) => [
+      `${time} - ${name}${suffix}`,
+      ...previousEvents,
+    ])
+  }
+
+  const handleAriaChange = (value) => {
+    setSelectedColourAria(value)
+    addAriaEvent('onChange (selection)', value || 'none')
+  }
+
+  const clearLogAria = () => {
+    setEventLogAria([])
   }
 
   return (
@@ -362,6 +392,85 @@ function App() {
                 ))}
               </Select>
             </FormControl>
+          </div>
+        </section>
+
+        <section className="control-section">
+          <h2>Dropdown - React Aria</h2>
+          <p className="description">
+            The same dropdown using the{' '}
+            <a
+              href="https://react-spectrum.adobe.com/react-aria/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              React Aria
+            </a>{' '}
+            <code>Select</code> component from Adobe. React Aria provides
+            fully accessible, behaviour-focused primitives; compare the
+            generated markup and ARIA attributes with the other implementations.
+          </p>
+
+          <div className="inspector-panel" aria-live="polite">
+            <h3>Interaction Inspector</h3>
+            <p className="selected-value">
+              Selected value:{' '}
+              <strong>{selectedColourAria || 'none'}</strong>
+            </p>
+
+            <div className="event-log-header">
+              <h4>Event Log</h4>
+              <button
+                type="button"
+                className="clear-log-button"
+                onClick={clearLogAria}
+                disabled={eventLogAria.length === 0}
+              >
+                Clear log
+              </button>
+            </div>
+            <div className="event-log-shell">
+              {eventLogAria.length === 0 ? (
+                <p className="empty-log">No events yet. Interact with the dropdown.</p>
+              ) : (
+                <ol className="event-log">
+                  {eventLogAria.map((eventEntry, index) => (
+                    <li key={`${eventEntry}-${index}`}>{eventEntry}</li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          </div>
+
+          <div className="control-demo">
+            <AriaSelect
+              className="aria-select"
+              placeholder="Choose a colour"
+              selectedKey={selectedColourAria}
+              onSelectionChange={handleAriaChange}
+              onOpenChange={(isOpen) => addAriaEvent(isOpen ? 'onOpen' : 'onClose')}
+              onFocus={() => addAriaEvent('onFocus')}
+              onBlur={() => addAriaEvent('onBlur')}
+            >
+              <Label className="demo-label">Select a colour</Label>
+              <Button className="aria-select-button">
+                <SelectValue className="aria-select-value" />
+                <span aria-hidden="true" className="aria-select-caret">▾</span>
+              </Button>
+              <Popover className="aria-select-popover">
+                <ListBox className="aria-select-listbox">
+                  {colourOptions.map((option) => (
+                    <ListBoxItem
+                      key={option.key}
+                      id={option.value}
+                      className="aria-select-option"
+                    >
+                      {option.text}
+                    </ListBoxItem>
+                  ))}
+                </ListBox>
+              </Popover>
+            </AriaSelect>
           </div>
         </section>
       </div>
