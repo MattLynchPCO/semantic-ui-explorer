@@ -13,6 +13,8 @@ import {
   Select as AriaSelect,
   SelectValue,
 } from 'react-aria-components'
+import { MantineProvider, Select as MantineSelect } from '@mantine/core'
+import '@mantine/core/styles.css'
 import './App.css'
 
 const colourOptions = [
@@ -33,6 +35,8 @@ function App() {
   const [eventLogMui, setEventLogMui] = useState([])
   const [selectedColourAria, setSelectedColourAria] = useState('')
   const [eventLogAria, setEventLogAria] = useState([])
+  const [selectedColourMantine, setSelectedColourMantine] = useState(null)
+  const [eventLogMantine, setEventLogMantine] = useState([])
 
   const addEvent = (name, details = '') => {
     const time = new Date().toLocaleTimeString()
@@ -147,7 +151,27 @@ function App() {
     setEventLogAria([])
   }
 
+  const addMantineEvent = (name, details = '') => {
+    const time = new Date().toLocaleTimeString()
+    const suffix = details ? `: ${details}` : ''
+
+    setEventLogMantine((previousEvents) => [
+      `${time} - ${name}${suffix}`,
+      ...previousEvents,
+    ])
+  }
+
+  const handleMantineChange = (value) => {
+    setSelectedColourMantine(value)
+    addMantineEvent('onChange (selection)', value || 'none')
+  }
+
+  const clearLogMantine = () => {
+    setEventLogMantine([])
+  }
+
   return (
+    <MantineProvider>
     <main className="explorer">
       <h1>Semantic UI Explorer</h1>
       <p className="subtitle">
@@ -473,8 +497,72 @@ function App() {
             </AriaSelect>
           </div>
         </section>
+
+        <section className="control-section">
+          <h2>Dropdown - Mantine</h2>
+          <p className="description">
+            The same dropdown using the{' '}
+            <a
+              href="https://mantine.dev/core/select/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Mantine
+            </a>{' '}
+            <code>Select</code> component. Mantine is a fully featured React
+            component library; compare the generated markup and accessibility
+            attributes with the other implementations.
+          </p>
+
+          <div className="inspector-panel" aria-live="polite">
+            <h3>Interaction Inspector</h3>
+            <p className="selected-value">
+              Selected value:{' '}
+              <strong>{selectedColourMantine || 'none'}</strong>
+            </p>
+
+            <div className="event-log-header">
+              <h4>Event Log</h4>
+              <button
+                type="button"
+                className="clear-log-button"
+                onClick={clearLogMantine}
+                disabled={eventLogMantine.length === 0}
+              >
+                Clear log
+              </button>
+            </div>
+            <div className="event-log-shell">
+              {eventLogMantine.length === 0 ? (
+                <p className="empty-log">No events yet. Interact with the dropdown.</p>
+              ) : (
+                <ol className="event-log">
+                  {eventLogMantine.map((eventEntry, index) => (
+                    <li key={`${eventEntry}-${index}`}>{eventEntry}</li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          </div>
+
+          <div className="control-demo">
+            <MantineSelect
+              label="Select a colour"
+              placeholder="Choose a colour"
+              data={colourOptions.map((o) => ({ value: o.value, label: o.text }))}
+              value={selectedColourMantine}
+              onChange={handleMantineChange}
+              onDropdownOpen={() => addMantineEvent('onOpen')}
+              onDropdownClose={() => addMantineEvent('onClose')}
+              onFocus={() => addMantineEvent('onFocus')}
+              onBlur={() => addMantineEvent('onBlur')}
+              styles={{ root: { width: 200 } }}
+            />
+          </div>
+        </section>
       </div>
     </main>
+    </MantineProvider>
   )
 }
 
